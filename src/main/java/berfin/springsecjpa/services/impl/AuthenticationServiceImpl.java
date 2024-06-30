@@ -1,13 +1,20 @@
 package berfin.springsecjpa.services.impl;
 
+import berfin.springsecjpa.dto.JwtAuthenticationResponse;
 import berfin.springsecjpa.dto.SignUpRequest;
+import berfin.springsecjpa.dto.SigninRequest;
 import berfin.springsecjpa.entities.AppUser;
 import berfin.springsecjpa.entities.Role;
 import berfin.springsecjpa.repository.UserRepository;
 import berfin.springsecjpa.services.AuthenticationService;
+import berfin.springsecjpa.services.JWTService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +22,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+
+    private final JWTService jwtService;
 
     public AppUser signup(SignUpRequest signupRequest){
         AppUser user = new AppUser();
@@ -29,4 +39,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     }
 
+    public JwtAuthenticationResponse signin(SigninRequest signinRequest){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword()));
+
+        var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(()-> new IllegalArgumentException("Invalid email") );
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(),user);
+
+        JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setRefreshToken(refreshToken);
+
+        return jwtAuthenticationResponse;
+    }
 }

@@ -1,7 +1,9 @@
 package berfin.springsecjpa.controllers;
 
 
+import berfin.springsecjpa.dto.JwtAuthenticationResponse;
 import berfin.springsecjpa.dto.SignUpRequest;
+import berfin.springsecjpa.dto.SigninRequest;
 import berfin.springsecjpa.entities.AppUser;
 import berfin.springsecjpa.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +25,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.signup(signUpRequest));
     }
 
+    @PostMapping("/signin")
+    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest signinRequest){
+        return ResponseEntity.ok(authenticationService.signin(signinRequest));
+    }
 
 }
