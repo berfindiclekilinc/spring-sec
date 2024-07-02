@@ -2,7 +2,7 @@ package berfin.springsecjpa.services.impl;
 
 import berfin.springsecjpa.dto.JwtAuthenticationResponse;
 import berfin.springsecjpa.dto.SignUpRequest;
-import berfin.springsecjpa.dto.SigninRequest;
+import berfin.springsecjpa.dto.SignInRequest;
 import berfin.springsecjpa.entities.AppUser;
 import berfin.springsecjpa.entities.Role;
 import berfin.springsecjpa.repository.UserRepository;
@@ -36,10 +36,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
         return userRepository.save(user);
-
     }
 
-    public JwtAuthenticationResponse signin(SigninRequest signinRequest){
+    public JwtAuthenticationResponse signin(SignInRequest signinRequest){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword()));
 
         var user = userRepository.findByEmail(signinRequest.getEmail()).orElseThrow(()-> new IllegalArgumentException("Invalid email") );

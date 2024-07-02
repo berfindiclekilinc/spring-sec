@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserService userService;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -63,6 +62,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         }
         filterChain.doFilter(request,response);
-
     }
 }
