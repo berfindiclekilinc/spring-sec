@@ -1,6 +1,7 @@
 package berfin.springsecjpa.services.impl;
 
 import berfin.springsecjpa.dto.JwtAuthenticationResponse;
+import berfin.springsecjpa.dto.RefreshTokenRequest;
 import berfin.springsecjpa.dto.SignUpRequest;
 import berfin.springsecjpa.dto.SignInRequest;
 import berfin.springsecjpa.entities.AppUser;
@@ -51,4 +52,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return jwtAuthenticationResponse;
     }
+
+    public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
+        String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
+        AppUser user = userRepository.findByEmail(userEmail).orElseThrow();
+        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
+            var jwt = jwtService.generateToken(user);
+
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
+
+            return jwtAuthenticationResponse;
+        }
+        return null;
+    }
+
 }

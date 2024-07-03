@@ -2,6 +2,7 @@ package berfin.springsecjpa.controllers;
 
 
 import berfin.springsecjpa.dto.JwtAuthenticationResponse;
+import berfin.springsecjpa.dto.RefreshTokenRequest;
 import berfin.springsecjpa.dto.SignUpRequest;
 import berfin.springsecjpa.dto.SignInRequest;
 import berfin.springsecjpa.entities.AppUser;
@@ -28,6 +29,11 @@ public class AuthenticationController {
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest signinRequest){
         return ResponseEntity.ok(authenticationService.signin(signinRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> refrest(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 
 }
