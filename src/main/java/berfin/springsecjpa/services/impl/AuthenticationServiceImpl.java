@@ -55,7 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
         String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
-        AppUser user = userRepository.findByEmail(userEmail).orElseThrow();
+        var user = userRepository.findByEmail(userEmail).orElseThrow(()-> new IllegalArgumentException("Invalid email") );
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
             var jwt = jwtService.generateToken(user);
 

@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization:");
+        final String authHeader = request.getHeader("Authorization");
         final String jwt;
 
         final String userEmail;
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
 
-        if (io.micrometer.common.util.StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (!StringUtils.isEmpty(userEmail)&& SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
 
             if (jwtService.isTokenValid(jwt, userDetails)){
@@ -57,7 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
-
             }
 
         }

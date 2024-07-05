@@ -40,6 +40,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    // Kullanıcı kimlik doğrulamasını veri tabanına dayalı olarak gerçekleştirir
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
